@@ -3,6 +3,18 @@
 The source code is ported from https://github.com/nu-book/zxing-cpp.
 
 ## Build
+Install [wasi-sdk_7.0_amd64.deb
+](https://github.com/CraneStation/wasi-sdk/releases).
+
+Set environment variables in terminal:
+
+```
+export PATH=/opt/wasi-sdk/bin:$PATH
+export CC=/opt/wasi-sdk/bin/clang
+export CXX=/opt/wasi-sdk/bin/clang++
+```
+
+Build the project:
 
 ```
 mkdir build
@@ -18,6 +30,7 @@ Install [wasmer](https://github.com/wasmerio/wasmer), [wasmtime](https://github.
 Run `zxing_barcode_reader.wasm`:
 
 **wasmer**
+
 ```
 wasmer run zxing_barcode_reader.wasm --dir=<image folder> <image file>
 
