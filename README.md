@@ -2,7 +2,7 @@
 
 The source code is ported from https://github.com/nu-book/zxing-cpp.
 
-## Build
+## How to Build
 Install [wasi-sdk_7.0_amd64.deb
 ](https://github.com/CraneStation/wasi-sdk/releases).
 
@@ -32,22 +32,25 @@ Run `zxing_barcode_reader.wasm`:
 **wasmer**
 
 ```
-wasmer run zxing_barcode_reader.wasm --dir=<image folder> <image file>
+wasmer run zxing_barcode_reader.wasm --dir=<image folder> <PNG file>
 
 ```
 
 **wasmtime**
 
 ```
-wasmtime zxing_barcode_reader.wasm --dir=<image folder> <image file>
+wasmtime zxing_barcode_reader.wasm --dir=<image folder> <PNG file>
 ```
 
 **wapm**
 
 ```
 wapm install yushulx/zxing_barcode_reader
-wapm run zxing_barcode_reader --dir=<image folder> <image file>
+wapm run zxing_barcode_reader --dir=<image folder> <PNG file>
 ```
+
+## Blog
+[How to Build ZXing C++ to Wasm using WASI SDK in Linux](https://medium.com/@yushulx/how-to-build-zxing-c-to-wasm-using-wasi-sdk-in-linux-c1c618ac83f4)
 
 
 

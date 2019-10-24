@@ -1,6 +1,6 @@
 [package]
 name = "yushulx/zxing_barcode_reader"
-version = "0.1.3"
+version = "0.1.4"
 description = "A barcode reader app built with ZXing C/C++ and wasi-sdk"
 readme = "README.md"
 repository = "https://github.com/yushulx/wasi-zxing-wasm"
