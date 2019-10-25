@@ -49,8 +49,12 @@ wapm install yushulx/zxing_barcode_reader
 wapm run zxing_barcode_reader --dir=<image folder> <PNG file>
 ```
 
+![](https://www.codepool.biz/wp-content/uploads/2019/10/test-640x480.png)
+
+![](https://www.codepool.biz/wp-content/uploads/2019/10/wapm-zxing-barcode-wasi-720x242.png)
+
 ## Blog
-[How to Build ZXing C++ to Wasm using WASI SDK in Linux](https://medium.com/@yushulx/how-to-build-zxing-c-to-wasm-using-wasi-sdk-in-linux-c1c618ac83f4)
+[How to Build ZXing C++ to Wasm using WASI SDK in Linux](https://www.codepool.biz/wasi-sdk-zxing-barcode-wasm.html)
 
 
 
