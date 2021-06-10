@@ -146,7 +146,7 @@ Code128Writer::encode(const std::wstring& contents, int width, int height) const
 	// Check length
 	int length = static_cast<int>(contents.length());
 	if (length < 1 || length > 80) {
-		throw std::invalid_argument("Contents length should be between 1 and 80 characters");
+		exit(7); // throw std::invalid_argument("Contents length should be between 1 and 80 characters");
 	}
 
 	// Check content
@@ -161,7 +161,7 @@ Code128Writer::encode(const std::wstring& contents, int width, int height) const
 			default:
 				if (c > 127) {
 					// support for FNC4 isn't implemented, no full Latin-1 character set available at the moment
-					throw std::invalid_argument(std::string("Bad character in input: ") + static_cast<char>(c));
+					exit(7); // throw std::invalid_argument(std::string("Bad character in input: ") + static_cast<char>(c));
 				}
 		}
 	}

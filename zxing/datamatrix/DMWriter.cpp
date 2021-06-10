@@ -97,18 +97,18 @@ BitMatrix
 Writer::encode(const std::wstring& contents, int width, int height) const
 {
 	if (contents.empty()) {
-		throw std::invalid_argument("Found empty contents");
+		exit(2);// throw std::invalid_argument("Found empty contents");
 	}
 
 	if (width < 0 || height < 0) {
-		throw std::invalid_argument("Requested dimensions are invalid");
+		exit(2);// throw std::invalid_argument("Requested dimensions are invalid");
 	}
 
 	//1. step: Data encodation
 	auto encoded = HighLevelEncoder::Encode(contents, _shapeHint, _minWidth, _minHeight, _maxWidth, _maxHeight);
 	const SymbolInfo* symbolInfo = SymbolInfo::Lookup(static_cast<int>(encoded.size()), _shapeHint, _minWidth, _minHeight, _maxWidth, _maxHeight);
 	if (symbolInfo == nullptr) {
-		throw std::invalid_argument("Can't find a symbol arrangement that matches the message. Data codewords: " + std::to_string(encoded.size()));
+		exit(2);// throw std::invalid_argument("Can't find a symbol arrangement that matches the message. Data codewords: " + std::to_string(encoded.size()));
 	}
 
 	//2. step: ECC generation

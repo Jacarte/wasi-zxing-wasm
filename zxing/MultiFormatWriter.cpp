@@ -127,8 +127,8 @@ MultiFormatWriter::encode(const std::wstring& contents, int width, int height) c
 		return CreateWriter<OneD::UPCAWriter>(_margin).encode(contents, width, height);
 	case BarcodeFormat::UPC_E:
 		return CreateWriter<OneD::UPCEWriter>(_margin).encode(contents, width, height);
-	default:
-		throw std::invalid_argument(std::string("Unsupported format: ") + ToString(_format));
+	default: // default exit(1) for non found format
+		exit(1);
 	}
 }
 

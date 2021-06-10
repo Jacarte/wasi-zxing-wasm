@@ -487,7 +487,7 @@ namespace C40Encoder {
 			}
 		}
 		else {
-			throw std::logic_error("Unexpected case. Please report!");
+			exit(13); // throw std::logic_error("Unexpected case. Please report!");
 		}
 		context.setNewEncoding(ASCII_ENCODATION);
 	}
@@ -625,7 +625,7 @@ namespace X12Encoder {
 				sb.push_back((char)(c - 65 + 14));
 			}
 			else {
-				throw std::invalid_argument("Illegal character: " + ToHexString(c));
+				exit(13); // throw std::invalid_argument("Illegal character: " + ToHexString(c));
 			}
 			break;
 		}
@@ -682,7 +682,7 @@ namespace EdifactEncoder {
 			sb.push_back((char)(c - 64));
 		}
 		else {
-			throw std::invalid_argument("Illegal character: " + ToHexString(c));
+			exit(13); // throw std::invalid_argument("Illegal character: " + ToHexString(c));
 		}
 	}
 
@@ -690,7 +690,7 @@ namespace EdifactEncoder {
 	{
 		int len = static_cast<int>(sb.length()) - startPos;
 		if (len == 0) {
-			throw std::invalid_argument("buffer must not be empty");
+			exit(13); // throw std::invalid_argument("buffer must not be empty");
 		}
 		int c1 = sb.at(startPos);
 		int c2 = len >= 2 ? sb.at(startPos + 1) : 0;
@@ -721,58 +721,53 @@ namespace EdifactEncoder {
 	*/
 	static void HandleEOD(EncoderContext& context, std::string& buffer)
 	{
-		try {
-			size_t count = buffer.length();
-			if (count == 0) {
-				return; //Already finished
-			}
-			if (count == 1) {
-				//Only an unlatch at the end
-				int codewordCount = context.codewordCount();
-				auto symbolInfo = context.updateSymbolInfo(codewordCount);
-				int available = symbolInfo->dataCapacity() - codewordCount;
-				int remaining = context.remainingCharacters();
-				// The following two lines are a hack inspired by the 'fix' from https://sourceforge.net/p/barcode4j/svn/221/
-				if (remaining > available)
-					available = context.updateSymbolInfo(codewordCount+1)->dataCapacity() - codewordCount;
-				if (remaining <= available && available <= 2) {
-					return; //No unlatch
-				}
-			}
-
-			if (count > 4) {
-				throw std::invalid_argument("Count must not exceed 4");
-			}
-			int restChars = static_cast<int>(count - 1);
-			auto encoded = EncodeToCodewords(buffer, 0);
-			bool endOfSymbolReached = !context.hasMoreCharacters();
-			bool restInAscii = endOfSymbolReached && restChars <= 2;
-
-			if (restChars <= 2) {
-				int codewordCount = context.codewordCount();
-				auto symbolInfo = context.updateSymbolInfo(codewordCount + restChars);
-				int available = symbolInfo->dataCapacity() - codewordCount;
-				if (available >= 3) {
-					restInAscii = false;
-					context.updateSymbolInfo(codewordCount + static_cast<int>(encoded.size()));
-					//available = context.symbolInfo.dataCapacity - context.getCodewordCount();
-				}
-			}
-
-			if (restInAscii) {
-				context.resetSymbolInfo();
-				context.setCurrentPos(context.currentPos() - restChars);
-			}
-			else {
-				for (uint8_t cw : encoded) {
-					context.addCodeword(cw);
-				}
+		size_t count = buffer.length();
+		if (count == 0) {
+			return; //Already finished
+		}
+		if (count == 1) {
+			//Only an unlatch at the end
+			int codewordCount = context.codewordCount();
+			auto symbolInfo = context.updateSymbolInfo(codewordCount);
+			int available = symbolInfo->dataCapacity() - codewordCount;
+			int remaining = context.remainingCharacters();
+			// The following two lines are a hack inspired by the 'fix' from https://sourceforge.net/p/barcode4j/svn/221/
+			if (remaining > available)
+				available = context.updateSymbolInfo(codewordCount+1)->dataCapacity() - codewordCount;
+			if (remaining <= available && available <= 2) {
+				return; //No unlatch
 			}
 		}
-		catch (...) {
-			context.setNewEncoding(ASCII_ENCODATION);
-			throw;
+
+		if (count > 4) {
+			exit(13); // throw std::invalid_argument("Count must not exceed 4");
 		}
+		int restChars = static_cast<int>(count - 1);
+		auto encoded = EncodeToCodewords(buffer, 0);
+		bool endOfSymbolReached = !context.hasMoreCharacters();
+		bool restInAscii = endOfSymbolReached && restChars <= 2;
+
+		if (restChars <= 2) {
+			int codewordCount = context.codewordCount();
+			auto symbolInfo = context.updateSymbolInfo(codewordCount + restChars);
+			int available = symbolInfo->dataCapacity() - codewordCount;
+			if (available >= 3) {
+				restInAscii = false;
+				context.updateSymbolInfo(codewordCount + static_cast<int>(encoded.size()));
+				//available = context.symbolInfo.dataCapacity - context.getCodewordCount();
+			}
+		}
+
+		if (restInAscii) {
+			context.resetSymbolInfo();
+			context.setCurrentPos(context.currentPos() - restChars);
+		}
+		else {
+			for (uint8_t cw : encoded) {
+				context.addCodeword(cw);
+			}
+		}
+		
 		context.setNewEncoding(ASCII_ENCODATION);
 	}
 
@@ -851,7 +846,7 @@ namespace Base256Encoder {
 				buffer.insert(1, 1, (char)(dataCount % 250));
 			}
 			else {
-				throw std::invalid_argument("Message length not in valid ranges: " + std::to_string(dataCount));
+				exit(13); // throw std::invalid_argument("Message length not in valid ranges: " + std::to_string(dataCount));
 			}
 		}
 		for (char c : buffer) {

@@ -122,7 +122,7 @@ public:
 		if (_symbolInfo == nullptr || len > _symbolInfo->dataCapacity()) {
 			_symbolInfo = SymbolInfo::Lookup(len, _shape, _minWidth, _minHeight, _maxWidth, _maxHeight);
 			if (_symbolInfo == nullptr) {
-				throw std::invalid_argument("Can't find a symbol arrangement that matches the message. Data codewords: " + std::to_string(len));
+				exit(14); // throw std::invalid_argument("Can't find a symbol arrangement that matches the message. Data codewords: " + std::to_string(len));
 			}
 		}
 		return _symbolInfo;

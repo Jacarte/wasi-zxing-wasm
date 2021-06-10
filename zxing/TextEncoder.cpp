@@ -181,7 +181,7 @@ static uint8_t unicodeToCharcode(uint16_t unicode, const MapEntry* entries, size
 			return it->charcode + (unicode - it->unicode) + 128;
 		}
 	}
-	throw std::invalid_argument("Unexpected charcode");
+	exit(18); // throw std::invalid_argument("Unexpected charcode");
 }
 
 static void mapFromUnicode(const std::wstring& str, const MapEntry* entries, size_t entryCount, std::string& bytes)
@@ -216,7 +216,7 @@ TextEncoder::GetBytes(const std::wstring& str, CharacterSet charset, std::string
 				bytes.push_back(static_cast<char>(c));
 			}
 			else {
-				throw std::invalid_argument("Unexpected charcode");
+				exit(18); // throw std::invalid_argument("Unexpected charcode");
 			}
 		}
 		break;
@@ -228,7 +228,7 @@ TextEncoder::GetBytes(const std::wstring& str, CharacterSet charset, std::string
 				bytes.push_back(static_cast<char>(c));
 			}
 			else {
-				throw std::invalid_argument("Unexpected charcode");
+				exit(18); // throw std::invalid_argument("Unexpected charcode");
 			}
 		}
 		break;

@@ -36,7 +36,7 @@ UPCEWriter::encode(const std::wstring& contents, int width, int height) const
 
 	int firstDigit = digits[0];
 	if (firstDigit != 0 && firstDigit != 1) {
-		throw std::invalid_argument("Number system must be 0 or 1");
+		exit(10); // throw std::invalid_argument("Number system must be 0 or 1");
 	}
 
 	int parities = UPCEANCommon::NUMSYS_AND_CHECK_DIGIT_PATTERNS[firstDigit * 10 + digits[7]];

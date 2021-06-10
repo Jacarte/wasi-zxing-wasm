@@ -49,13 +49,13 @@ ITFWriter::encode(const std::wstring& contents, int width, int height) const
 {
 	size_t length = contents.length();
 	if (length == 0) {
-		throw std::invalid_argument("Found empty contents");
+		exit(8); // throw std::invalid_argument("Found empty contents");
 	}
 	if (length % 2 != 0) {
-		throw std::invalid_argument("The length of the input should be even");
+		exit(8); // throw std::invalid_argument("The length of the input should be even");
 	}
 	if (length > 80) {
-		throw std::invalid_argument("Requested contents should be less than 80 digits long");
+		exit(8); // throw std::invalid_argument("Requested contents should be less than 80 digits long");
 	}
 
 	std::vector<bool> result(9 + 9 * length, false);
@@ -64,7 +64,7 @@ ITFWriter::encode(const std::wstring& contents, int width, int height) const
 		int one = contents[i] - '0';
 		int two = contents[i + 1] - '0';
 		if (one < 0 || one > 9 || two < 0 || two > 9) {
-			throw std::invalid_argument("Contents should contain only digits: 0-9");
+			exit(8); // throw std::invalid_argument("Contents should contain only digits: 0-9");
 		}
 		std::array<int, 10> encoding = {};
 		for (int j = 0; j < 5; j++) {

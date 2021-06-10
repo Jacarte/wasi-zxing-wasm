@@ -41,11 +41,12 @@ BitMatrix
 Writer::encode(const std::wstring& contents, int width, int height) const
 {
 	if (contents.empty()) {
-		throw std::invalid_argument("Found empty contents");
+		exit(3); // throw std::invalid_argument("Found empty contents");
 	}
 
 	if (width < 0 || height < 0) {
-		throw std::invalid_argument("Requested dimensions are invalid");
+		
+		exit(3); // throw std::invalid_argument("Requested dimensions are invalid");
 	}
 
 	EncodeResult code = Encoder::Encode(contents, _ecLevel, _encoding, _version, _useGs1Format, _maskPattern);

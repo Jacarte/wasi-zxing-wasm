@@ -69,7 +69,7 @@ static const GenericGF& GetGFFromWordSize(int wordSize)
 	case 12:
 		return GenericGF::AztecData12();
 	default:
-		throw std::invalid_argument("Unsupported word size " + std::to_string(wordSize));
+		exit(11); // throw std::invalid_argument("Unsupported word size " + std::to_string(wordSize));
 	}
 }
 
@@ -218,18 +218,18 @@ Encoder::Encode(const std::string& data, int minECCPercent, int userSpecifiedLay
 		compact = userSpecifiedLayers < 0;
 		layers = std::abs(userSpecifiedLayers);
 		if (layers > (compact ? MAX_NB_BITS_COMPACT : MAX_NB_BITS)) {
-			throw std::invalid_argument("Illegal value for layers: " + std::to_string(userSpecifiedLayers));
+			exit(11); // throw std::invalid_argument("Illegal value for layers: " + std::to_string(userSpecifiedLayers));
 		}
 		totalBitsInLayer = TotalBitsInLayer(layers, compact);
 		wordSize = WORD_SIZE[layers];
 		int usableBitsInLayers = totalBitsInLayer - (totalBitsInLayer % wordSize);
 		StuffBits(bits, wordSize, stuffedBits);
 		if (stuffedBits.size() + eccBits > usableBitsInLayers) {
-			throw std::invalid_argument("Data to large for user specified layer");
+			exit(11); // throw std::invalid_argument("Data to large for user specified layer");
 		}
 		if (compact && stuffedBits.size() > wordSize * 64) {
 			// Compact format only allows 64 data words, though C4 can hold more words than that
-			throw std::invalid_argument("Data to large for user specified layer");
+			exit(11); // throw std::invalid_argument("Data to large for user specified layer");
 		}
 	}
 	else {
@@ -239,7 +239,7 @@ Encoder::Encode(const std::string& data, int minECCPercent, int userSpecifiedLay
 		// is the same size, but has more data.
 		for (int i = 0; ; i++) {
 			if (i > MAX_NB_BITS) {
-				throw std::invalid_argument("Data too large for an Aztec code");
+				exit(11); // throw std::invalid_argument("Data too large for an Aztec code");
 			}
 			compact = i <= 3;
 			layers = compact ? i + 1 : i;

@@ -498,7 +498,7 @@ static void DetermineDimensions(int minCols, int maxCols, int minRows, int maxRo
 			haveDimension = true;
 		}
 		else {
-			throw std::invalid_argument("Unable to fit message in columns");
+			exit(16); // throw std::invalid_argument("Unable to fit message in columns");
 		}
 	}
 }
@@ -507,13 +507,13 @@ static void DetermineDimensions(int minCols, int maxCols, int minRows, int maxRo
 /**
 * @param msg message to encode
 * @param errorCorrectionLevel PDF417 error correction level to use
-* @throws WriterException if the contents cannot be encoded in this format
+* @exit(16); // throws WriterException if the contents cannot be encoded in this format
 */
 BarcodeMatrix
 Encoder::generateBarcodeLogic(const std::wstring& msg, int errorCorrectionLevel) const
 {
 	if (errorCorrectionLevel < 0 || errorCorrectionLevel > 8) {
-		throw std::invalid_argument("Error correction level must be between 0 and 8!");
+		exit(16); // throw std::invalid_argument("Error correction level must be between 0 and 8!");
 	}
 
 	//1. step: High-level encoding
@@ -529,7 +529,7 @@ Encoder::generateBarcodeLogic(const std::wstring& msg, int errorCorrectionLevel)
 
 	//2. step: construct data codewords
 	if (sourceCodeWords + errorCorrectionCodeWords + 1 > 929) { // +1 for symbol length CW
-		throw std::invalid_argument("Encoded message contains to many code words, message too big");
+		exit(16); // throw std::invalid_argument("Encoded message contains to many code words, message too big");
 	}
 	int n = sourceCodeWords + pad + 1;
 	std::vector<int> dataCodewords;

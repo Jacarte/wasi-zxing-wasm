@@ -200,7 +200,7 @@ static void EmbedPositionDetectionPattern(int xStart, int yStart, ByteMatrix& ma
 static void EmbedHorizontalSeparationPattern(int xStart, int yStart, ByteMatrix& matrix) {
 	for (int x = 0; x < 8; ++x) {
 		if (!IsEmpty(matrix.get(xStart + x, yStart))) {
-			throw std::invalid_argument("Unexpected input");
+			exit(21); // throw std::invalid_argument("Unexpected input");
 		}
 		matrix.set(xStart + x, yStart, 0);
 	}
@@ -210,7 +210,7 @@ static void EmbedVerticalSeparationPattern(int xStart, int yStart, ByteMatrix& m
 {
 	for (int y = 0; y < 7; ++y) {
 		if (!IsEmpty(matrix.get(xStart, yStart + y))) {
-			throw std::invalid_argument("Unexpected input");
+			exit(21); // throw std::invalid_argument("Unexpected input");
 		}
 		matrix.set(xStart, yStart + y, 0);
 	}
@@ -252,7 +252,7 @@ static void EmbedPositionDetectionPatternsAndSeparators(ByteMatrix& matrix)
 static void EmbedDarkDotAtLeftBottomCorner(ByteMatrix& matrix)
 {
 	if (matrix.get(8, matrix.height() - 8) == 0) {
-		throw std::invalid_argument("Unexpected input");
+		exit(21); // throw std::invalid_argument("Unexpected input");
 	}
 	matrix.set(8, matrix.height() - 8, 1);
 }
@@ -331,7 +331,7 @@ static int CalculateBCHCode(int value, int poly) {
 static void MakeTypeInfoBits(ErrorCorrectionLevel ecLevel, int maskPattern, BitArray& bits)
 {
 	if (maskPattern < 0 || maskPattern >= MatrixUtil::NUM_MASK_PATTERNS) {
-		throw std::invalid_argument("Invalid mask pattern");
+		exit(21); // throw std::invalid_argument("Invalid mask pattern");
 	}
 
 	int typeInfo = (BitsFromECLevel(ecLevel) << 3) | maskPattern;
@@ -345,7 +345,7 @@ static void MakeTypeInfoBits(ErrorCorrectionLevel ecLevel, int maskPattern, BitA
 	bits.bitwiseXOR(maskBits);
 
 	if (bits.size() != 15) {  // Just in case.
-		throw std::logic_error("Should not happen but we got: " + std::to_string(bits.size()));
+		exit(21); // throw std::logic_error("Should not happen but we got: " + std::to_string(bits.size()));
 	}
 }
 
@@ -389,7 +389,7 @@ static void MakeVersionInfoBits(const Version& version, BitArray& bits)
 	bits.appendBits(bchCode, 12);
 
 	if (bits.size() != 18) {  // Just in case.
-		throw std::logic_error("Should not happen but we got: " + std::to_string(bits.size()));
+		exit(21); // throw std::logic_error("Should not happen but we got: " + std::to_string(bits.size()));
 	}
 }
 
@@ -455,7 +455,7 @@ static bool GetDataMaskBit(int maskPattern, int x, int y)
 		intermediate = ((temp % 3) + ((y + x) & 0x1)) & 0x1;
 		break;
 	default:
-		throw std::invalid_argument("Invalid mask pattern: " + std::to_string(maskPattern));
+		exit(21); // throw std::invalid_argument("Invalid mask pattern: " + std::to_string(maskPattern));
 	}
 	return intermediate == 0;
 }
@@ -507,7 +507,7 @@ static void EmbedDataBits(const BitArray& dataBits, int maskPattern, ByteMatrix&
 	}
 	// All bits should be consumed.
 	if (bitIndex != dataBits.size()) {
-		throw std::invalid_argument("Not all bits consumed: " + std::to_string(bitIndex) + '/' + std::to_string(dataBits.size()));
+		exit(21); // throw std::invalid_argument("Not all bits consumed: " + std::to_string(bitIndex) + '/' + std::to_string(dataBits.size()));
 	}
 }
 

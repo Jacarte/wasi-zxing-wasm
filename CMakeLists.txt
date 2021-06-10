@@ -3,11 +3,15 @@ cmake_minimum_required (VERSION 3.1.3)
 project (ZXingExamples)
 
 set (ENABLE_DECODERS ON CACHE BOOL "Check to include decoders")
-set (CMAKE_SYSROOT /opt/wasi-sdk/share/wasi-sysroot)
+ # set (CMAKE_SYSROOT /opt/wasi-sdk/share/wasi-sysroot)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --target=wasm32-wasi -Wall -Wextra -fno-exceptions")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto --target=wasm32-wasi -Wall -Wextra -fno-exceptions")
 set (CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}  -D_DEBUG")
 set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")
+
+set(HAVE_FLAG_SEARCH_PATHS_FIRST 0)
+set(CMAKE_C_LINK_FLAGS "")
+set(CMAKE_CXX_LINK_FLAGS "")
 
 ################# Source files
 
@@ -284,6 +288,91 @@ if (ENABLE_DECODERS)
     )
 endif()
 
+
+set( ENCODER_FILES ${ENCODER_FILES}
+
+    zxing/MultiFormatWriter.h
+    zxing/MultiFormatWriter.cpp
+
+    zxing/aztec/AZWriter.h
+    zxing/aztec/AZWriter.cpp
+    zxing/aztec/AZEncoder.h
+    zxing/aztec/AZEncoder.cpp
+    zxing/aztec/AZHighLevelEncoder.h
+    zxing/aztec/AZHighLevelEncoder.cpp
+    zxing/aztec/AZToken.h
+    zxing/aztec/AZToken.cpp
+
+    zxing/datamatrix/DMWriter.h
+    zxing/datamatrix/DMWriter.cpp
+    zxing/datamatrix/DMECEncoder.h
+    zxing/datamatrix/DMECEncoder.cpp
+    zxing/datamatrix/DMHighLevelEncoder.h
+    zxing/datamatrix/DMHighLevelEncoder.cpp
+    zxing/datamatrix/DMDefaultPlacement.h
+    zxing/datamatrix/DMDefaultPlacement.cpp
+    zxing/datamatrix/DMSymbolInfo.h
+    zxing/datamatrix/DMSymbolInfo.cpp
+
+    zxing/pdf417/PDFWriter.h
+    zxing/pdf417/PDFWriter.cpp
+    zxing/pdf417/PDFEncoder.h
+    zxing/pdf417/PDFEncoder.cpp
+    zxing/pdf417/PDFHighLevelEncoder.h
+    zxing/pdf417/PDFHighLevelEncoder.cpp
+
+    zxing/qrcode/QRWriter.h
+    zxing/qrcode/QRWriter.cpp
+    zxing/qrcode/QREncoder.h
+    zxing/qrcode/QREncoder.cpp
+    zxing/qrcode/QRMatrixUtil.h
+    zxing/qrcode/QRMatrixUtil.cpp
+    zxing/qrcode/QRMaskUtil.h
+    zxing/qrcode/QRMaskUtil.cpp
+
+    zxing/oned/ODCodabarWriter.h
+    zxing/oned/ODCodabarWriter.cpp
+    zxing/oned/ODCode39Writer.h
+    zxing/oned/ODCode39Writer.cpp
+    zxing/oned/ODCode93Writer.h
+    zxing/oned/ODCode93Writer.cpp
+    zxing/oned/ODCode128Writer.h
+    zxing/oned/ODCode128Writer.cpp
+    zxing/oned/ODEAN8Writer.h
+    zxing/oned/ODEAN8Writer.cpp
+    zxing/oned/ODEAN13Writer.h
+    zxing/oned/ODEAN13Writer.cpp
+    zxing/oned/ODITFWriter.h
+    zxing/oned/ODITFWriter.cpp
+    zxing/oned/ODUPCAWriter.h
+    zxing/oned/ODUPCAWriter.cpp
+    zxing/oned/ODUPCEWriter.h
+    zxing/oned/ODUPCEWriter.cpp
+    zxing/oned/ODWriterHelper.h
+    zxing/oned/ODWriterHelper.cpp
+
+
+    zxing/TextEncoder.h
+    zxing/TextEncoder.cpp
+
+    zxing/ReedSolomonEncoder.h
+    zxing/ReedSolomonEncoder.cpp
+
+    zxing/textcodec/JPTextEncoder.h
+    zxing/textcodec/JPTextEncoder.cpp
+
+    zxing/textcodec/Big5TextEncoder.h
+    zxing/textcodec/Big5TextEncoder.cpp
+
+
+    zxing/textcodec/GBTextEncoder.h
+    zxing/textcodec/GBTextEncoder.cpp
+
+
+    zxing/textcodec/KRTextEncoder.h
+    zxing/textcodec/KRTextEncoder.cpp
+)
+
 add_executable (zxing_barcode_reader.wasm
         scan_image.cpp
         ${COMMON_FILES}
@@ -297,7 +386,25 @@ add_executable (zxing_barcode_reader.wasm
         ${TEXT_CODEC_FILES}
     )
     
+add_executable (zxing_barcode_writer.wasm
+    generate_barcode.cpp
+    ${COMMON_FILES}
+    ${AZTEC_FILES}
+    ${DATAMATRIX_FILES}
+    ${MAXICODE_FILES}
+    ${ONED_FILES}
+    ${ONED_RSS_FILES}
+    ${PDF417_FILES}
+    ${QRCODE_FILES}
+    ${TEXT_CODEC_FILES}
+    ${ENCODER_FILES}
+)
 target_include_directories (zxing_barcode_reader.wasm
+    PRIVATE stb
+    PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/zxing>"
+)
+
+target_include_directories (zxing_barcode_writer.wasm
     PRIVATE stb
     PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/zxing>"
 )

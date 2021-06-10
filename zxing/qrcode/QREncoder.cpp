@@ -144,7 +144,7 @@ void AppendLengthInfo(int numLetters, const Version& version, CodecMode::Mode mo
 {
 	int numBits = CodecMode::CharacterCountBits(mode, version);
 	if (numLetters >= (1 << numBits)) {
-		return throw std::invalid_argument(std::to_string(numLetters) + " is bigger than " + std::to_string((1 << numBits) - 1));
+		return exit(17); // throw std::invalid_argument(std::to_string(numLetters) + " is bigger than " + std::to_string((1 << numBits) - 1));
 	}
 	bits.appendBits(numLetters, numBits);
 }
@@ -185,12 +185,12 @@ void AppendAlphanumericBytes(const std::wstring& content, BitArray& bits)
 	while (i < length) {
 		int code1 = GetAlphanumericCode(content[i]);
 		if (code1 == -1) {
-			throw std::invalid_argument("Unexpected contents");
+			exit(17); // throw std::invalid_argument("Unexpected contents");
 		}
 		if (i + 1 < length) {
 			int code2 = GetAlphanumericCode(content[i + 1]);
 			if (code2 == -1) {
-				throw std::invalid_argument("Unexpected contents");
+				exit(17); // throw std::invalid_argument("Unexpected contents");
 			}
 			// Encode two alphanumeric letters in 11 bits.
 			bits.appendBits(code1 * 45 + code2, 11);
@@ -218,7 +218,7 @@ void AppendKanjiBytes(const std::wstring& content, BitArray& bits)
 	std::string bytes = TextEncoder::FromUnicode(content, CharacterSet::Shift_JIS);
 	int length = (int)bytes.size();
 	if (length % 2 != 0) {
-		throw std::invalid_argument("Kanji byte size not even");
+		exit(17); // throw std::invalid_argument("Kanji byte size not even");
 	}
 	--length;
 	for (int i = 0; i < length; i += 2) {
@@ -233,7 +233,7 @@ void AppendKanjiBytes(const std::wstring& content, BitArray& bits)
 			subtracted = code - 0xc140;
 		}
 		if (subtracted == -1) {
-			throw std::invalid_argument("Invalid byte sequence");
+			exit(17); // throw std::invalid_argument("Invalid byte sequence");
 		}
 		int encoded = ((subtracted >> 8) * 0xc0) + (subtracted & 0xff);
 		bits.appendBits(encoded, 13);
@@ -260,7 +260,7 @@ void AppendBytes(const std::wstring& content, CodecMode::Mode mode, CharacterSet
 			AppendKanjiBytes(content, bits);
 			break;
 		default:
-			throw std::invalid_argument("Invalid mode: " + std::to_string(mode));
+			exit(17); // throw std::invalid_argument("Invalid mode: " + std::to_string(mode));
 	}
 }
 
@@ -289,7 +289,7 @@ static const Version& ChooseVersion(int numInputBits, ErrorCorrectionLevel ecLev
 			return *version;
 		}
 	}
-	throw std::invalid_argument("Data too big");
+	exit(17); // throw std::invalid_argument("Data too big");
 }
 
 /**
@@ -300,7 +300,7 @@ void TerminateBits(int numDataBytes, BitArray& bits)
 {
 	int capacity = numDataBytes * 8;
 	if (bits.size() > capacity) {
-		throw std::invalid_argument("data bits cannot fit in the QR Code" + std::to_string(bits.size()) + " > " + std::to_string(capacity));
+		exit(17); // throw std::invalid_argument("data bits cannot fit in the QR Code" + std::to_string(bits.size()) + " > " + std::to_string(capacity));
 	}
 	for (int i = 0; i < 4 && bits.size() < capacity; ++i) {
 		bits.appendBit(false);
@@ -319,7 +319,7 @@ void TerminateBits(int numDataBytes, BitArray& bits)
 		bits.appendBits((i & 0x01) == 0 ? 0xEC : 0x11, 8);
 	}
 	if (bits.size() != capacity) {
-		throw std::invalid_argument("Bits size does not equal capacity");
+		exit(17); // throw std::invalid_argument("Bits size does not equal capacity");
 	}
 }
 
@@ -340,7 +340,7 @@ ZXING_EXPORT_TEST_ONLY
 void GetNumDataBytesAndNumECBytesForBlockID(int numTotalBytes, int numDataBytes, int numRSBlocks, int blockID,  int& numDataBytesInBlock, int& numECBytesInBlock)
 {
 	if (blockID >= numRSBlocks) {
-		throw std::invalid_argument("Block ID too large");
+		exit(17); // throw std::invalid_argument("Block ID too large");
 	}
 	// numRsBlocksInGroup2 = 196 % 5 = 1
 	int numRsBlocksInGroup2 = numTotalBytes % numRSBlocks;
@@ -361,11 +361,11 @@ void GetNumDataBytesAndNumECBytesForBlockID(int numTotalBytes, int numDataBytes,
 	// Sanity checks.
 	// 26 = 26
 	if (numEcBytesInGroup1 != numEcBytesInGroup2) {
-		throw std::invalid_argument("EC bytes mismatch");
+		exit(17); // throw std::invalid_argument("EC bytes mismatch");
 	}
 	// 5 = 4 + 1.
 	if (numRSBlocks != numRsBlocksInGroup1 + numRsBlocksInGroup2) {
-		throw std::invalid_argument("RS blocks mismatch");
+		exit(17); // throw std::invalid_argument("RS blocks mismatch");
 	}
 	// 196 = (13 + 26) * 4 + (14 + 26) * 1
 	if (numTotalBytes !=
@@ -373,7 +373,7 @@ void GetNumDataBytesAndNumECBytesForBlockID(int numTotalBytes, int numDataBytes,
 			numRsBlocksInGroup1) +
 			((numDataBytesInGroup2 + numEcBytesInGroup2) *
 				numRsBlocksInGroup2)) {
-		throw std::invalid_argument("Total bytes mismatch");
+		exit(17); // throw std::invalid_argument("Total bytes mismatch");
 	}
 
 	if (blockID < numRsBlocksInGroup1) {
@@ -410,7 +410,7 @@ BitArray InterleaveWithECBytes(const BitArray& bits, int numTotalBytes, int numD
 {
 	// "bits" must have "getNumDataBytes" bytes of data.
 	if (bits.sizeInBytes() != numDataBytes) {
-		throw std::invalid_argument("Number of bits and data bytes does not match");
+		exit(17); // throw std::invalid_argument("Number of bits and data bytes does not match");
 	}
 
 	// Step 1.  Divide data bytes into blocks and generate error correction bytes for them. We'll
@@ -437,7 +437,7 @@ BitArray InterleaveWithECBytes(const BitArray& bits, int numTotalBytes, int numD
 		dataBytesOffset += numDataBytesInBlock;
 	}
 	if (numDataBytes != dataBytesOffset) {
-		throw std::invalid_argument("Data bytes does not match offset");
+		exit(17); // throw std::invalid_argument("Data bytes does not match offset");
 	}
 
 	BitArray output;
@@ -458,7 +458,7 @@ BitArray InterleaveWithECBytes(const BitArray& bits, int numTotalBytes, int numD
 		}
 	}
 	if (numTotalBytes != output.sizeInBytes()) {  // Should be same.
-		throw std::invalid_argument("Interleaving error: " + std::to_string(numTotalBytes) + " and " + std::to_string(output.sizeInBytes()) + " differ.");
+		exit(17); // throw std::invalid_argument("Interleaving error: " + std::to_string(numTotalBytes) + " and " + std::to_string(output.sizeInBytes()) + " differ.");
 	}
 	return output;
 }
@@ -487,7 +487,7 @@ static int CalculateBitsNeeded(CodecMode::Mode mode, const BitArray& headerBits,
 
 /**
 * Decides the smallest version of QR code that will contain all of the provided data.
-* @throws WriterException if the data cannot fit in any version
+* @exit(17); // throws WriterException if the data cannot fit in any version
 */
 static const Version& RecommendVersion(ErrorCorrectionLevel ecLevel, CodecMode::Mode mode, const BitArray& headerBits, const BitArray& dataBits)
 {
@@ -543,7 +543,7 @@ Encoder::Encode(const std::wstring& content, ErrorCorrectionLevel ecLevel, Chara
 		if (version != nullptr) {
 			int bitsNeeded = CalculateBitsNeeded(mode, headerBits, dataBits, *version);
 			if (!WillFit(bitsNeeded, *version, ecLevel)) {
-				throw std::invalid_argument("Data too big for requested version");
+				exit(17); // throw std::invalid_argument("Data too big for requested version");
 			}
 		}
 		else {

@@ -45,11 +45,11 @@ void
 ReedSolomonEncoder::encode(std::vector<int>& toEncode, const int ecBytes)
 {
 	if (ecBytes == 0) {
-		throw std::invalid_argument("No error correction bytes");
+		exit(19); // throw std::invalid_argument("No error correction bytes");
 	}
 	int dataBytes = static_cast<int>(toEncode.size()) - ecBytes;
 	if (dataBytes <= 0) {
-		throw std::invalid_argument("No data bytes provided");
+		exit(19); // throw std::invalid_argument("No data bytes provided");
 	}
 	GenericGFPoly info = GenericGFPoly(*_field, std::vector<int>(toEncode.begin(), toEncode.begin() + dataBytes));
 	info.multiplyByMonomial(ecBytes, 1);

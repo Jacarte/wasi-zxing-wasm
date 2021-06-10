@@ -120,7 +120,7 @@ static std::string TryToConvertToExtendedMode(const std::wstring& contents) {
 					extendedContent.push_back((char)('P' + (character - 123)));
 				}
 				else {
-					throw std::invalid_argument("Requested content contains a non-encodable character: '" + ToHexString(character) + "'");
+					exit(5); // throw std::invalid_argument("Requested content contains a non-encodable character: '" + ToHexString(character) + "'");
 				}
 				break;
 		}
@@ -134,10 +134,10 @@ Code39Writer::encode(const std::wstring& contents, int width, int height) const
 {
 	size_t length = contents.length();
 	if (length == 0) {
-		throw std::invalid_argument("Found empty contents");
+		exit(5); // throw std::invalid_argument("Found empty contents");
 	}
 	if (length > 80) {
-		throw std::invalid_argument("Requested contents should be less than 80 digits long");
+		exit(5); // throw std::invalid_argument("Requested contents should be less than 80 digits long");
 	}
 
 	std::string extendedContent;
@@ -147,7 +147,7 @@ Code39Writer::encode(const std::wstring& contents, int width, int height) const
 			extendedContent = TryToConvertToExtendedMode(contents);
 			length = extendedContent.length();
 			if (length > 80) {
-				throw std::invalid_argument("Requested contents should be less than 80 digits long, but got " + std::to_string(length) + " (extended full ASCII mode)");
+				exit(5); // throw std::invalid_argument("Requested contents should be less than 80 digits long, but got " + std::to_string(length) + " (extended full ASCII mode)");
 			}
 			break;
 		}

@@ -140,7 +140,7 @@ SymbolInfo::horizontalDataRegions() const
 	case 36:
 		return 6;
 	default:
-		throw std::out_of_range("Cannot handle this number of data regions");
+		exit(15); // throw std::out_of_range("Cannot handle this number of data regions");
 	}
 }
 
@@ -158,7 +158,7 @@ SymbolInfo::verticalDataRegions() const {
 	case 36:
 		return 6;
 	default:
-		throw std::out_of_range("Cannot handle this number of data regions");
+		exit(15); // throw std::out_of_range("Cannot handle this number of data regions");
 	}
 }
 

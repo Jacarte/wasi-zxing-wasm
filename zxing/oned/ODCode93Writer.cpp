@@ -143,7 +143,7 @@ std::string Code93ConvertToExtended(const std::wstring& contents)
 			extendedContent.push_back((char)('P' + character - '{'));
 		}
 		else {
-			throw std::invalid_argument(std::string("Requested content contains a non-encodable character: '") + (char)character + "'");
+			exit(6); // throw std::invalid_argument(std::string("Requested content contains a non-encodable character: '") + (char)character + "'");
 		}
 	}
 	return extendedContent;
@@ -156,10 +156,10 @@ Code93Writer::encode(const std::wstring& contents_, int width, int height) const
 
 	size_t length = contents.length();
 	if (length == 0) {
-		throw std::invalid_argument("Found empty contents");
+		exit(6); // throw std::invalid_argument("Found empty contents");
 	}
 	if (length > 80) {
-		throw std::invalid_argument("Requested contents should be less than 80 digits long after converting to extended encoding");
+		exit(6); // throw std::invalid_argument("Requested contents should be less than 80 digits long after converting to extended encoding");
 	}
 
 	//lenght of code + 2 start/stop characters + 2 checksums, each of 9 bits, plus a termination bar

@@ -114,7 +114,7 @@ static void CreateECCBlock(ByteArray& data, int codeOffset, int codeLength, int 
 	auto iter = std::lower_bound(FACTORS.begin(), FACTORS.end(), eccLength,
 							   [](const ByteArray& vec, size_t size) { return vec.size() < size; });
 	if (iter == FACTORS.end())
-		throw std::invalid_argument("Illegal number of error correction codewords specified: " + std::to_string(eccLength));
+		exit(12); // throw std::invalid_argument("Illegal number of error correction codewords specified: " + std::to_string(eccLength));
 
 	auto& poly = *iter;
 	ByteArray ecc(eccLength);
@@ -139,7 +139,7 @@ void
 ECEncoder::EncodeECC200(ByteArray& codewords, const SymbolInfo& symbolInfo)
 {
 	if (codewords.size() != (size_t)symbolInfo.dataCapacity()) {
-		throw std::invalid_argument("The number of codewords does not match the selected symbol");
+		exit(12); // throw std::invalid_argument("The number of codewords does not match the selected symbol");
 	}
 	codewords.resize(symbolInfo.codewordCount(), 0);
 	int blockCount = symbolInfo.interleavedBlockCount();

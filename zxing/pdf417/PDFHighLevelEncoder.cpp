@@ -175,7 +175,7 @@ static void EncodingECI(int eci, std::vector<int>& buffer)
 		buffer.push_back(810900 - eci);
 	}
 	else {
-		throw std::invalid_argument("ECI number not in valid range from 0..811799");
+		exit(20); // throw std::invalid_argument("ECI number not in valid range from 0..811799");
 	}
 }
 
